@@ -14,6 +14,11 @@ int main()
     int start = 0;
     int end = 0;
     int answer = 0;
+    int count = 0;
+    int gg = 0;
+    // for each index i you need to find largest j such that i to j <=k
+    // once find we know that total (j-i)+1 subarray start frm index i such that their sum<=k
+    // sum[i..i]<=k also sum[i...i+1]<=k, also sum[i...i+2]<=k
     while (i < n && j < n)
     {
         // if both i and j are equal
@@ -32,7 +37,7 @@ int main()
             else
             {
                 // else we will just increment k pointer only
-                answer = max(answer, 1); // as only one length is there
+                count += 1;
                 j++;
                 if (j <= n)
                 {
@@ -48,28 +53,40 @@ int main()
                 start = i;
                 end = j - 1;
                 int l = abs(start - end) + 1;
-                answer = max(answer, l);
+                count += l; // we got l as number of subarray
                 sum = sum - arr[i];
                 i++;
                 sum = sum - arr[j]; // because the element which makes it greater is added into it
                 j--;
                 if (i > j)
                 {
-                    j = i; // corner case
+                    j = i; // corner case if i crosses j due to the fact that arr[j] may be so large, that it may allow i to go beoynd j so we needto reinitaialize to j so that we can consider after that
                 }
             }
             else
             {
-                answer = max(answer, abs(i - j) + 1);
                 j++;
                 if (j <= n)
                 {
                     sum = sum + arr[j]; // adding next element
                 }
+                // but we need to keep track of last s[i...j] such that  j = N and s[i...j]<=k, as the last one if <=k it won't get the chance to cacluate its subarray
+                if (j == n)
+                {
+                    // j at last
+                    int gg = i;
+                }
             }
         }
     }
-    cout << "Longest length" << longestSubArrayCount;
+    if (gg >= 1)
+    {
+        int s = gg;
+        int e = n - 1;
+        int l = abs(s - e) + 1;
+        count += l;
+    }
+    cout << "Longest length" << count;
 
     return 0;
 }

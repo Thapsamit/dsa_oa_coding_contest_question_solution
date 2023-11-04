@@ -8,7 +8,7 @@ int main()
     int i = 0;
     int j = 0;
     int n = sizeof(arr) / sizeof(arr[0]);
-    int sum = arr[0]; // taking first in sum
+    int diff = 0; // taking first in sum
     int k = 4;
     int longestSubArrayCount = 0;
     int start = 0;
@@ -19,14 +19,16 @@ int main()
         // if both i and j are equal
         if (i == j)
         {
-            // either the element is greater k, so we need to move both point
-            if (arr[j] > k)
+            diff = 0; // as both are same index so difference is 0
+                      // either the element is greater k, so we need to move both point
+            if (diff > k)
             {
+                // this if condition not necessary to write but still we can write it
                 i++;
                 j++;
                 if (i <= n)
                 {
-                    sum += arr[i]; // we are now considering the next element  let say we have 10,5 and we were at 10 and we have  k = 6 then we can't consider that 10 so we are moving pointer and consider the sum of next element
+                    diff = arr[j] - arr[i]; // we are now considering the next element  let say we have 10,5 and we were at 10 and we have  k = 6 then we can't consider that 10 so we are moving pointer and consider the sum of next element
                 }
             }
             else
@@ -36,23 +38,26 @@ int main()
                 j++;
                 if (j <= n)
                 {
-                    sum += arr[j];
+                    diff = arr[j] - arr[i];
                 }
             }
         }
         else
         {
-            // if sum > k , we actually need to remove from left side till we have sum>k, and longest possible was [i,...j-1] till this time
-            if (sum > k)
+            diff = arr[j] - arr[i];
+            if (diff > k)
             {
+                // if d[1..j]>k
+                // we know that d[1...j-1]<=k
+                // no need to visit this subbaray
+                // we have longest one is d[1..j-1]
                 start = i;
                 end = j - 1;
                 int l = abs(start - end) + 1;
                 answer = max(answer, l);
-                sum = sum - arr[i];
                 i++;
-                sum = sum - arr[j]; // because the element which makes it greater is added into it
-                j++;
+                j--;
+                diff = arr[j] - arr[i]; // caclulate new diff
                 if (i > j)
                 {
                     j = i; // corner case
@@ -60,11 +65,13 @@ int main()
             }
             else
             {
-                answer = max(answer, abs(i - j) + 1);
-                j++;
+                start = i;
+                end = j;
+                int l = abs(start - end) + 1;
+                answer = max(answer, l);
                 if (j <= n)
                 {
-                    sum = sum + arr[j]; // adding next element
+                    diff = arr[j] - arr[i]; // adding next element
                 }
             }
         }
